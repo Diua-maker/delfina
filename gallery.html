@@ -1,0 +1,1389 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Galeria de Obras - ArtConnect</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary-color: #4a6fa5;
+            --secondary-color: #166088;
+            --accent-color: #4fc3f7;
+            --text-color: #333;
+            --light-bg: #f5f7fa;
+            --white: #ffffff;
+            --gray: #888;
+            --gray-light: #eee;
+        }
+
+        body {
+            background-color: var(--light-bg);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        header {
+            background-color: var(--white);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--primary-color);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo i {
+            margin-right: 10px;
+            color: var(--accent-color);
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+
+        .nav-links li {
+            margin-left: 30px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-color);
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            color: var(--accent-color);
+        }
+
+        .auth-buttons a {
+            text-decoration: none;
+            margin-left: 15px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--secondary-color);
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+        }
+
+        .btn-outline:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .menu-toggle {
+            display: none;
+            cursor: pointer;
+            font-size: 24px;
+        }
+
+        .gallery {
+            padding: 60px 0;
+        }
+
+        .gallery-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .gallery-header h1 {
+            font-size: 36px;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+
+        .gallery-header p {
+            font-size: 18px;
+            color: var(--gray);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .search-filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 40px;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 300px;
+            position: relative;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 12px 20px;
+            padding-left: 45px;
+            border: 1px solid var(--gray-light);
+            border-radius: 5px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: var(--accent-color);
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray);
+        }
+
+        .filter-dropdown {
+            position: relative;
+        }
+
+        .filter-dropdown select {
+            padding: 12px 35px 12px 15px;
+            border: 1px solid var(--gray-light);
+            border-radius: 5px;
+            font-size: 16px;
+            appearance: none;
+            background-color: white;
+            cursor: pointer;
+            transition: border-color 0.3s;
+        }
+
+        .filter-dropdown select:focus {
+            outline: none;
+            border-color: var(--accent-color);
+        }
+
+        .filter-dropdown i {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--gray);
+            pointer-events: none;
+        }
+
+        .artwork-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .artwork-card {
+            background-color: var(--white);
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+            transition: transform 0.3s;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .artwork-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .artwork-image {
+            height: 250px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .artwork-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s;
+        }
+
+        .artwork-card:hover .artwork-image img {
+            transform: scale(1.05);
+        }
+
+        .artwork-details {
+            padding: 25px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .artwork-title {
+            font-size: 22px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--primary-color);
+        }
+
+        .artwork-description {
+            color: var(--text-color);
+            margin-bottom: 20px;
+            flex: 1;
+        }
+
+        .artist-info {
+            margin-top: auto;
+            padding-top: 20px;
+            border-top: 1px solid var(--gray-light);
+        }
+
+        .artist-name {
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--secondary-color);
+            display: flex;
+            align-items: center;
+        }
+
+        .artist-name i {
+            margin-right: 10px;
+            color: var(--accent-color);
+        }
+
+        .artist-contact {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            color: var(--gray);
+            font-size: 14px;
+            transition: color 0.3s;
+        }
+
+        .contact-item:hover {
+            color: var(--accent-color);
+        }
+
+        .contact-item i {
+            margin-right: 8px;
+        }
+
+        .contact-item a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .location {
+            display: flex;
+            align-items: center;
+            color: var(--gray);
+            font-size: 14px;
+            margin-top: 10px;
+        }
+
+        .location i {
+            margin-right: 8px;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 50px;
+            gap: 10px;
+        }
+
+        .pagination-btn {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 5px;
+            background-color: var(--white);
+            color: var(--text-color);
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 1px solid var(--gray-light);
+        }
+
+        .pagination-btn.active {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        .pagination-btn:hover:not(.active) {
+            background-color: var(--gray-light);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 0;
+        }
+
+        .empty-state i {
+            font-size: 60px;
+            color: var(--gray-light);
+            margin-bottom: 20px;
+        }
+
+        .empty-state h2 {
+            font-size: 24px;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+
+        .empty-state p {
+            color: var(--gray);
+            max-width: 500px;
+            margin: 0 auto 30px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px 0;
+        }
+
+        .loading i {
+            font-size: 40px;
+            color: var(--primary-color);
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s;
+        }
+
+        .modal.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background-color: var(--white);
+            border-radius: 10px;
+            width: 90%;
+            max-width: 900px;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            transform: scale(0.8);
+            transition: transform 0.3s;
+        }
+
+        .modal.active .modal-content {
+            transform: scale(1);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 24px;
+            color: var(--gray);
+            cursor: pointer;
+            z-index: 10;
+            transition: color 0.3s;
+        }
+
+        .modal-close:hover {
+            color: var(--error-color);
+        }
+
+        .modal-body {
+            display: flex;
+            flex-direction: column;
+            padding: 30px;
+        }
+
+        @media (min-width: 768px) {
+            .modal-body {
+                flex-direction: row;
+                gap: 30px;
+            }
+        }
+
+        .modal-image {
+            flex: 1;
+            margin-bottom: 20px;
+        }
+
+        @media (min-width: 768px) {
+            .modal-image {
+                margin-bottom: 0;
+            }
+        }
+
+        .modal-image img {
+            width: 100%;
+            height: auto;
+            border-radius: 5px;
+            max-height: 500px;
+            object-fit: contain;
+        }
+
+        .modal-details {
+            flex: 1;
+        }
+
+        .modal-title {
+            font-size: 28px;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+        }
+
+        .modal-description {
+            margin-bottom: 30px;
+            line-height: 1.8;
+        }
+
+        .modal-artist {
+            padding-top: 20px;
+            border-top: 1px solid var(--gray-light);
+        }
+
+        .modal-artist-name {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--secondary-color);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+
+        .modal-artist-name i {
+            margin-right: 10px;
+            color: var(--accent-color);
+        }
+
+        .modal-artist-bio {
+            margin-bottom: 20px;
+            color: var(--gray);
+            font-style: italic;
+        }
+
+        .modal-contact {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .modal-contact-item {
+            display: flex;
+            align-items: center;
+            color: var(--text-color);
+        }
+
+        .modal-contact-item i {
+            width: 30px;
+            color: var(--primary-color);
+        }
+
+        .modal-contact-item a {
+            color: var(--primary-color);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .modal-contact-item a:hover {
+            text-decoration: underline;
+        }
+
+        footer {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 40px 0;
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+
+        .footer-section {
+            flex: 1;
+            min-width: 250px;
+            margin-bottom: 20px;
+        }
+
+        .footer-section h3 {
+            margin-bottom: 20px;
+            font-size: 20px;
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 10px;
+        }
+
+        .footer-section a {
+            color: white;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-section a:hover {
+            color: var(--accent-color);
+        }
+
+        .social-icons {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .social-icons a {
+            color: white;
+            font-size: 20px;
+            transition: color 0.3s;
+        }
+
+        .social-icons a:hover {
+            color: var(--accent-color);
+        }
+
+        .copyright {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        @media (max-width: 768px) {
+            .menu-toggle {
+                display: block;
+            }
+
+            .nav-links {
+                position: fixed;
+                top: 80px;
+                left: -100%;
+                width: 100%;
+                height: calc(100vh - 80px);
+                background-color: var(--white);
+                flex-direction: column;
+                align-items: center;
+                justify-content: flex-start;
+                padding-top: 40px;
+                transition: left 0.3s;
+                z-index: 99;
+            }
+
+            .nav-links.active {
+                left: 0;
+            }
+
+            .nav-links li {
+                margin: 15px 0;
+            }
+
+            .gallery-header h1 {
+                font-size: 28px;
+            }
+
+            .gallery-header p {
+                font-size: 16px;
+            }
+
+            .footer-content {
+                flex-direction: column;
+            }
+
+            .footer-section {
+                margin-bottom: 30px;
+            }
+        }
+
+        #user-status {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <nav>
+                <a href="index.html" class="logo"><i class="fas fa-paint-brush"></i>ArtConnect</a>
+                <div class="menu-toggle" id="mobile-menu">
+                    <i class="fas fa-bars"></i>
+                </div>
+                <ul class="nav-links" id="nav-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="gallery.html" class="active">Galeria</a></li>
+                    <li><a href="contact.html">Contato</a></li>
+                    <li id="dashboard-link" style="display: none;"><a href="dashboard.html">Meu Painel</a></li>
+                </ul>
+                <div class="auth-buttons" id="auth-buttons">
+                    <a href="auth.html" class="btn btn-outline">Entrar</a>
+                    <a href="auth.html?register=true" class="btn btn-primary">Cadastrar</a>
+                </div>
+                <div id="user-status">
+                    <span id="user-name"></span>
+                    <a href="#" id="logout-btn" class="btn btn-outline">Sair</a>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <section class="gallery">
+        <div class="container">
+            <div class="gallery-header">
+                <h1>Galeria de Obras</h1>
+                <p>Explore trabalhos incríveis de desenhistas talentosos e entre em contato diretamente com os artistas</p>
+            </div>
+
+            <div class="search-filters">
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="search-input" placeholder="Buscar por título ou nome do artista...">
+                </div>
+                <div class="filter-dropdown">
+                    <select id="sort-select">
+                        <option value="newest">Mais recentes</option>
+                        <option value="oldest">Mais antigos</option>
+                        <option value="title-asc">Título (A-Z)</option>
+                        <option value="title-desc">Título (Z-A)</option>
+                    </select>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+            </div>
+
+            <div id="loading" class="loading">
+                <i class="fas fa-spinner"></i>
+            </div>
+
+            <div id="artwork-grid" class="artwork-grid" style="display: none;">
+                <!-- As obras serão carregadas dinamicamente aqui -->
+            </div>
+
+            <div id="empty-state" class="empty-state" style="display: none;">
+                <i class="fas fa-search"></i>
+                <h2>Nenhuma obra encontrada</h2>
+                <p>Não encontramos obras que correspondam à sua busca. Tente outros termos ou remova os filtros.</p>
+                <button id="clear-filters" class="btn btn-primary">Limpar Filtros</button>
+            </div>
+
+            <div id="pagination" class="pagination">
+                <!-- Paginação será gerada dinamicamente -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Modal de detalhes da obra -->
+    <div class="modal" id="artwork-modal">
+        <div class="modal-content">
+            <div class="modal-close" id="modal-close">
+                <i class="fas fa-times"></i>
+            </div>
+            <div class="modal-body">
+                <div class="modal-image">
+                    <img id="modal-image" src="" alt="Imagem da obra">
+                </div>
+                <div class="modal-details">
+                    <h2 class="modal-title" id="modal-title"></h2>
+                    <div class="modal-description" id="modal-description"></div>
+                    <div class="modal-artist">
+                        <h3 class="modal-artist-name">
+                            <i class="fas fa-user-circle"></i>
+                            <span id="modal-artist-name"></span>
+                        </h3>
+                        <p class="modal-artist-bio" id="modal-artist-bio"></p>
+                        <div class="modal-contact">
+                            <div class="modal-contact-item">
+                                <i class="fas fa-envelope"></i>
+                                <a id="modal-email" href=""></a>
+                            </div>
+                            <div class="modal-contact-item">
+                                <i class="fab fa-whatsapp"></i>
+                                <a id="modal-whatsapp" href="" target="_blank"></a>
+                            </div>
+                            <div class="modal-contact-item" id="modal-telegram-container">
+                                <i class="fab fa-telegram"></i>
+                                <a id="modal-telegram" href="" target="_blank"></a>
+                            </div>
+                            <div class="modal-contact-item" id="modal-location-container">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span id="modal-location"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>ArtConnect</h3>
+                    <p>Conectando desenhistas talentosos e clientes em busca de arte única.</p>
+                    <div class="social-icons">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-pinterest"></i></a>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h3>Links Rápidos</h3>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="gallery.html">Galeria</a></li>
+                        <li><a href="auth.html">Login</a></li>
+                        <li><a href="auth.html?register=true">Cadastro</a></li>
+                        <li><a href="contact.html">Contato</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Contato</h3>
+                    <ul>
+                        <li><i class="fas fa-envelope"></i> contato@artconnect.com</li>
+                        <li><i class="fas fa-phone"></i> (11) 99999-9999</li>
+                        <li><i class="fas fa-map-marker-alt"></i> São Paulo, Brasil</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2025 ArtConnect. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+
+    <script>
+        // Configuração do Firebase
+        const firebaseConfig = {
+            apiKey: "SUA_API_KEY",
+            authDomain: "seu-projeto.firebaseapp.com",
+            projectId: "seu-projeto",
+            storageBucket: "seu-projeto.appspot.com",
+            messagingSenderId: "seu-messaging-sender-id",
+            appId: "seu-app-id"
+        };
+
+        // Inicializa o Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
+        // Toggle menu mobile
+        const mobileMenu = document.getElementById('mobile-menu');
+        const navLinks = document.getElementById('nav-links');
+
+        mobileMenu.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+        });
+
+        // Elementos do DOM
+        const artworkGrid = document.getElementById('artwork-grid');
+        const loadingElement = document.getElementById('loading');
+        const emptyState = document.getElementById('empty-state');
+        const paginationElement = document.getElementById('pagination');
+        const searchInput = document.getElementById('search-input');
+        const sortSelect = document.getElementById('sort-select');
+        const clearFilters = document.getElementById('clear-filters');
+        const modal = document.getElementById('artwork-modal');
+        const modalClose = document.getElementById('modal-close');
+        const modalImage = document.getElementById('modal-image');
+        const modalTitle = document.getElementById('modal-title');
+        const modalDescription = document.getElementById('modal-description');
+        const modalArtistName = document.getElementById('modal-artist-name');
+        const modalArtistBio = document.getElementById('modal-artist-bio');
+        const modalEmail = document.getElementById('modal-email');
+        const modalWhatsapp = document.getElementById('modal-whatsapp');
+        const modalTelegram = document.getElementById('modal-telegram');
+        const modalTelegramContainer = document.getElementById('modal-telegram-container');
+        const modalLocation = document.getElementById('modal-location');
+        const modalLocationContainer = document.getElementById('modal-location-container');
+        const authButtons = document.getElementById('auth-buttons');
+        const userStatus = document.getElementById('user-status');
+        const userName = document.getElementById('user-name');
+        const dashboardLink = document.getElementById('dashboard-link');
+        const logoutBtn = document.getElementById('logout-btn');
+
+        // Variáveis para paginação e filtros
+        let currentPage = 1;
+        let itemsPerPage = 9;
+        let totalPages = 1;
+        let allArtworks = [];
+        let filteredArtworks = [];
+        let currentSearch = '';
+        let currentSort = 'newest';
+
+        // Verificar estado de autenticação
+        auth.onAuthStateChanged(user => {
+            if (user) {
+                // Usuário está logado
+                authButtons.style.display = 'none';
+                userStatus.style.display = 'flex';
+                userName.textContent = user.email;
+
+                // Verificar se é desenhista para mostrar link do painel
+                db.collection('users').doc(user.uid).get().then(doc => {
+                    if (doc.exists && doc.data().userType === 'artist') {
+                        dashboardLink.style.display = 'block';
+                    }
+                });
+            } else {
+                // Usuário não está logado
+                authButtons.style.display = 'block';
+                userStatus.style.display = 'none';
+                dashboardLink.style.display = 'none';
+            }
+        });
+
+        // Carregar todas as obras
+        function loadArtworks() {
+            loadingElement.style.display = 'block';
+            artworkGrid.style.display = 'none';
+            emptyState.style.display = 'none';
+
+            db.collection('artworks')
+                .orderBy('createdAt', 'desc')
+                .get()
+                .then(snapshot => {
+                    allArtworks = [];
+                    snapshot.forEach(doc => {
+                        const artwork = doc.data();
+                        artwork.id = doc.id;
+                        // Converter timestamp para Date
+                        if (artwork.createdAt) {
+                            artwork.createdAt = artwork.createdAt.toDate();
+                        }
+                        allArtworks.push(artwork);
+                    });
+
+                    // Aplicar filtros e ordenação iniciais
+                    applyFilters();
+                })
+                .catch(error => {
+                    console.error('Erro ao carregar obras:', error);
+                    loadingElement.style.display = 'none';
+                    artworkGrid.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-exclamation-circle"></i>
+                            <h2>Erro ao carregar obras</h2>
+                            <p>Ocorreu um erro ao carregar as obras. Por favor, tente novamente mais tarde.</p>
+                        </div>
+                    `;
+                    artworkGrid.style.display = 'block';
+                });
+        }
+
+        // Aplicar filtros e ordenação
+        function applyFilters() {
+            // Filtrar por termo de busca
+            if (currentSearch) {
+                const searchTerm = currentSearch.toLowerCase();
+                filteredArtworks = allArtworks.filter(artwork => 
+                    artwork.title.toLowerCase().includes(searchTerm) || 
+                    (artwork.artistName && artwork.artistName.toLowerCase().includes(searchTerm))
+                );
+            } else {
+                filteredArtworks = [...allArtworks];
+            }
+
+            // Aplicar ordenação
+            switch (currentSort) {
+                case 'newest':
+                    filteredArtworks.sort((a, b) => b.createdAt - a.createdAt);
+                    break;
+                case 'oldest':
+                    filteredArtworks.sort((a, b) => a.createdAt - b.createdAt);
+                    break;
+                case 'title-asc':
+                    filteredArtworks.sort((a, b) => a.title.localeCompare(b.title));
+                    break;
+                case 'title-desc':
+                    filteredArtworks.sort((a, b) => b.title.localeCompare(a.title));
+                    break;
+            }
+
+            // Atualizar total de páginas
+            totalPages = Math.ceil(filteredArtworks.length / itemsPerPage);
+            
+            // Garantir que a página atual é válida
+            if (currentPage > totalPages) {
+                currentPage = totalPages > 0 ? totalPages : 1;
+            }
+
+            // Renderizar obras e paginação
+            renderArtworks();
+            renderPagination();
+        }
+
+        // Renderizar obras na página atual
+        function renderArtworks() {
+            loadingElement.style.display = 'none';
+            
+            // Se não houver obras após filtros, mostrar estado vazio
+            if (filteredArtworks.length === 0) {
+                artworkGrid.style.display = 'none';
+                emptyState.style.display = 'block';
+                paginationElement.style.display = 'none';
+                return;
+            }
+
+            // Calcular índices para a página atual
+            const startIndex = (currentPage - 1) * itemsPerPage;
+            const endIndex = Math.min(startIndex + itemsPerPage, filteredArtworks.length);
+            const currentArtworks = filteredArtworks.slice(startIndex, endIndex);
+
+            // Limpar grid e adicionar obras
+            artworkGrid.innerHTML = '';
+            
+            currentArtworks.forEach(artwork => {
+                // Criar elemento de card para cada obra
+                const artworkCard = document.createElement('div');
+                artworkCard.className = 'artwork-card';
+                artworkCard.dataset.id = artwork.id;
+                
+                // Formatar descrição curta
+                const shortDescription = artwork.description && artwork.description.length > 100 
+                    ? artwork.description.substring(0, 100) + '...' 
+                    : artwork.description || 'Sem descrição disponível';
+                
+                // Montar HTML do card
+                artworkCard.innerHTML = `
+                    <div class="artwork-image">
+                        <img src="${artwork.imageUrl || 'https://via.placeholder.com/300x250?text=Sem+Imagem'}" alt="${artwork.title}">
+                    </div>
+                    <div class="artwork-details">
+                        <h3 class="artwork-title">${artwork.title}</h3>
+                        <p class="artwork-description">${shortDescription}</p>
+                        <div class="artist-info">
+                            <div class="artist-name">
+                                <i class="fas fa-user-circle"></i>
+                                ${artwork.artistName || 'Artista desconhecido'}
+                            </div>
+                            <div class="location">
+                                <i class="fas fa-map-marker-alt"></i>
+                                ${artwork.location || 'Localização não informada'}
+                            </div>
+                            <div class="artist-contact">
+                                <div class="contact-item">
+                                    <i class="fas fa-envelope"></i>
+                                    <a href="mailto:${artwork.email || ''}">${artwork.email || 'Email não disponível'}</a>
+                                </div>
+                                <div class="contact-item">
+                                    <i class="fab fa-whatsapp"></i>
+                                    <a href="https://wa.me/${artwork.whatsapp ? artwork.whatsapp.replace(/\D/g, '') : ''}" target="_blank">
+                                        ${artwork.whatsapp || 'WhatsApp não disponível'}
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                // Adicionar evento de clique para abrir modal
+                artworkCard.addEventListener('click', () => {
+                    openArtworkModal(artwork);
+                });
+                
+                // Adicionar card ao grid
+                artworkGrid.appendChild(artworkCard);
+            });
+            
+            // Mostrar grid e esconder estados vazios
+            artworkGrid.style.display = 'grid';
+            emptyState.style.display = 'none';
+            paginationElement.style.display = 'flex';
+        }
+
+        // Renderizar paginação
+        function renderPagination() {
+            paginationElement.innerHTML = '';
+            
+            // Se só tiver uma página, não mostrar paginação
+            if (totalPages <= 1) {
+                return;
+            }
+            
+            // Botão anterior
+            const prevBtn = document.createElement('div');
+            prevBtn.className = 'pagination-btn';
+            prevBtn.innerHTML = '<i class="fas fa-chevron-left"></i>';
+            prevBtn.addEventListener('click', () => {
+                if (currentPage > 1) {
+                    currentPage--;
+                    renderArtworks();
+                    renderPagination();
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+            });
+            paginationElement.appendChild(prevBtn);
+            
+            // Determinar quais páginas mostrar
+            let startPage = Math.max(1, currentPage - 2);
+            let endPage = Math.min(totalPages, startPage + 4);
+            
+            if (endPage - startPage < 4) {
+                startPage = Math.max(1, endPage - 4);
+            }
+            
+            // Botões de página
+            for (let i = startPage; i <= endPage; i++) {
+                const pageBtn = document.createElement('div');
+                pageBtn.className = 'pagination-btn' + (i === currentPage ? ' active' : '');
+                pageBtn.textContent = i;
+                pageBtn.addEventListener('click', () => {
+                    if (i !== currentPage) {
+                        currentPage = i;
+                        renderArtworks();
+                        renderPagination();
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                    }
+                });
+                paginationElement.appendChild(pageBtn);
+            }
+            
+            // Botão próximo
+            const nextBtn = document.createElement('div');
+            nextBtn.className = 'pagination-btn';
+            nextBtn.innerHTML = '<i class="fas fa-chevron-right"></i>';
+            nextBtn.addEventListener('click', () => {
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    renderArtworks();
+                    renderPagination();
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+            });
+            paginationElement.appendChild(nextBtn);
+        }
+
+        // Abrir modal com detalhes da obra
+        function openArtworkModal(artwork) {
+            // Preencher dados no modal
+            modalImage.src = artwork.imageUrl || 'https://via.placeholder.com/600x400?text=Sem+Imagem';
+            modalTitle.textContent = artwork.title;
+            modalDescription.textContent = artwork.description || 'Sem descrição disponível';
+            modalArtistName.textContent = artwork.artistName || 'Artista desconhecido';
+            modalArtistBio.textContent = artwork.artistBio || 'Biografia não disponível';
+            
+            // Configurar links de contato
+            modalEmail.textContent = artwork.email || 'Email não disponível';
+            modalEmail.href = artwork.email ? `mailto:${artwork.email}` : '#';
+            
+            modalWhatsapp.textContent = artwork.whatsapp || 'WhatsApp não disponível';
+            modalWhatsapp.href = artwork.whatsapp ? `https://wa.me/${artwork.whatsapp.replace(/\D/g, '')}` : '#';
+            
+            // Verificar se tem Telegram
+            if (artwork.telegram) {
+                modalTelegram.textContent = artwork.telegram;
+                modalTelegram.href = `https://t.me/${artwork.telegram.replace('@', '')}`;
+                modalTelegramContainer.style.display = 'flex';
+            } else {
+                modalTelegramContainer.style.display = 'none';
+            }
+            
+            // Verificar se tem localização
+            if (artwork.location) {
+                modalLocation.textContent = artwork.location;
+                modalLocationContainer.style.display = 'flex';
+            } else {
+                modalLocationContainer.style.display = 'none';
+            }
+            
+            // Abrir modal
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden'; // Impedir scroll da página
+        }
+
+        // Fechar modal
+        function closeModal() {
+            modal.classList.remove('active');
+            document.body.style.overflow = ''; // Restaurar scroll
+        }
+
+        // Event Listeners
+        document.addEventListener('DOMContentLoaded', () => {
+            // Carregar obras ao iniciar
+            loadArtworks();
+            
+            // Pesquisa
+            searchInput.addEventListener('input', debounce(() => {
+                currentSearch = searchInput.value.trim();
+                currentPage = 1;
+                applyFilters();
+            }, 300));
+            
+            // Ordenação
+            sortSelect.addEventListener('change', () => {
+                currentSort = sortSelect.value;
+                applyFilters();
+            });
+            
+            // Limpar filtros
+            clearFilters.addEventListener('click', () => {
+                searchInput.value = '';
+                currentSearch = '';
+                sortSelect.value = 'newest';
+                currentSort = 'newest';
+                currentPage = 1;
+                applyFilters();
+            });
+            
+            // Fechar modal
+            modalClose.addEventListener('click', closeModal);
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    closeModal();
+                }
+            });
+            
+            // Tecla ESC para fechar modal
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    closeModal();
+                }
+            });
+            
+            // Logout
+            logoutBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                auth.signOut().then(() => {
+                    window.location.href = 'index.html';
+                }).catch(error => {
+                    console.error('Erro ao fazer logout:', error);
+                });
+            });
+        });
+
+        // Função de debounce para evitar múltiplas chamadas em eventos de input
+        function debounce(func, delay) {
+            let timeout;
+            return function() {
+                const context = this;
+                const args = arguments;
+                clearTimeout(timeout);
+                timeout = setTimeout(() => func.apply(context, args), delay);
+            };
+        }
+
+        // Função para formatar data
+        function formatDate(date) {
+            if (!date) return 'Data não disponível';
+            
+            const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
+            return date.toLocaleDateString('pt-BR', options);
+        }
+
+        // Dados de exemplo para teste (serão substituídos pelos dados do Firebase)
+        function loadSampleData() {
+            // Esta função é apenas para teste local sem Firebase
+            allArtworks = [
+                {
+                    id: '1',
+                    title: 'Paisagem Montanhosa',
+                    description: 'Uma bela paisagem de montanhas ao pôr do sol, com cores vibrantes e detalhes impressionantes.',
+                    imageUrl: 'https://source.unsplash.com/random/600x400/?mountains',
+                    artistName: 'Carlos Silva',
+                    artistBio: 'Artista especializado em paisagens naturais com mais de 10 anos de experiência.',
+                    email: 'carlos.silva@example.com',
+                    whatsapp: '5511999999999',
+                    telegram: '@carlossilva',
+                    location: 'São Paulo, SP',
+                    createdAt: new Date('2023-05-15')
+                },
+                {
+                    id: '2',
+                    title: 'Retrato Urbano',
+                    description: 'Um retrato expressivo capturando a essência da vida urbana moderna com técnicas de aquarela.',
+                    imageUrl: 'https://source.unsplash.com/random/600x400/?portrait',
+                    artistName: 'Ana Oliveira',
+                    artistBio: 'Especialista em retratos e ilustrações urbanas, formada em Artes Visuais.',
+                    email: 'ana.oliveira@example.com',
+                    whatsapp: '5511988888888',
+                    location: 'Rio de Janeiro, RJ',
+                    createdAt: new Date('2023-06-20')
+                },
+                {
+                    id: '3',
+                    title: 'Abstrato Colorido',
+                    description: 'Composição abstrata com formas geométricas e explosão de cores, representando emoções e movimento.',
+                    imageUrl: 'https://source.unsplash.com/random/600x400/?abstract',
+                    artistName: 'Pedro Santos',
+                    artistBio: 'Artista contemporâneo focado em arte abstrata e experimental.',
+                    email: 'pedro.santos@example.com',
+                    whatsapp: '5511977777777',
+                    telegram: '@pedrosantos',
+                    location: 'Belo Horizonte, MG',
+                    createdAt: new Date('2023-04-10')
+                },
+                {
+                    id: '4',
+                    title: 'Natureza Morta',
+                    description: 'Composição clássica de natureza morta com frutas e objetos do cotidiano, explorando luz e sombra.',
+                    imageUrl: 'https://source.unsplash.com/random/600x400/?still-life',
+                    artistName: 'Mariana Costa',
+                    artistBio: 'Artista tradicional com foco em técnicas clássicas de pintura a óleo.',
+                    email: 'mariana.costa@example.com',
+                    whatsapp: '5511966666666',
+                    location: 'Curitiba, PR',
+                    createdAt: new Date('2023-07-05')
+                },
+                {
+                    id: '5',
+                    title: 'Ilustração Fantástica',
+                    description: 'Ilustração digital com elementos fantásticos e criaturas míticas em um mundo imaginário.',
+                    imageUrl: 'https://source.unsplash.com/random/600x400/?fantasy',
+                    artistName: 'Lucas Mendes',
+                    artistBio: 'Ilustrador digital especializado em arte conceitual para games e livros.',
+                    email: 'lucas.mendes@example.com',
+                    whatsapp: '5511955555555',
+                    telegram: '@lucasmendes',
+                    location: 'Brasília, DF',
+                    createdAt: new Date('2023-03-25')
+                },
+                {
+                    id: '6',
+                    title: 'Caricatura Expressiva',
+                    description: 'Caricatura expressiva destacando características marcantes com humor e técnica refinada.',
+                    imageUrl: 'https://source.unsplash.com/random/600x400/?cartoon',
+                    artistName: 'Juliana Alves',
+                    artistBio: 'Caricaturista profissional com experiência em eventos e publicações.',
+                    email: 'juliana.alves@example.com',
+                    whatsapp: '5511944444444',
+                    location: 'Salvador, BA',
+                    createdAt: new Date('2023-06-30')
+                },
+                {
+                    id: '7',
+                    title: 'Grafite Urbano',
+                    description: 'Arte urbana com mensagem social, utilizando técnicas de grafite e stencil em grande escala.',
+                    imageUrl: 'https://source.unsplash.com/random/600x400/?graffiti',
+                    artistName: 'Rafael Souza',
+                    artistBio: 'Artista urbano com projetos em várias cidades do Brasil e exterior.',
+                    email: 'rafael.souza@example.com',
+                    whatsapp: '5511933333333',
+                    telegram: '@rafaelsouza',
+                    location: 'Recife, PE',
+                    createdAt: new Date('2023-05-05')
+                },
+                {
+                    id: '8',
+                    title: 'Aquarela Delicada',
+                    description: 'Pintura em aquarela com tons suaves e transparências, retratando flores e elementos naturais.',
+                    imageUrl: 'https://source.unsplash.com/random/600x400/?watercolor',
+                    artistName: 'Camila Rocha',
+                    artistBio: 'Especialista em aquarela e técnicas de pintura em papel.',
+                    email: 'camila.rocha@example.com',
+                    whatsapp: '5511922222222',
+                    location: 'Florianópolis, SC',
+                    createdAt: new Date('2023-07-15')
+                },
+                {
+                    id: '9',
+                    title: 'Ilustração Infantil',
+                    description: 'Ilustração colorida para livros infantis com personagens carismáticos e cenários lúdicos.',
+                    imageUrl: 'https://source.unsplash.com/random/600x400/?children-book',
+                    artistName: 'Bruno Lima',
+                    artistBio: 'Ilustrador de livros infantis com mais de 20 publicações no mercado.',
+                    email: 'bruno.lima@example.com',
+                    whatsapp: '5511911111111',
+                    telegram: '@brunolima',
+                    location: 'Porto Alegre, RS',
+                    createdAt: new Date('2023-04-20')
+                },
+                {
+                    id: '10',
+                    title: 'Escultura Digital',
+                    description: 'Modelagem 3D de personagem com detalhes realistas, pronta para impressão ou uso em animação.',
+                    imageUrl: 'https://source.unsplash.com/random/600x400/?3d-art',
+                    artistName: 'Fernanda Dias',
+                    artistBio: 'Artista digital especializada em modelagem 3D e escultura digital.',
+                    email: 'fernanda.dias@example.com',
+                    whatsapp: '5511900000000',
+                    location: 'Fortaleza, CE',
+                    createdAt: new Date('2023-03-10')
+                }
+            ];
+            
+            // Aplicar filtros aos dados de exemplo
+            applyFilters();
+        }
+
+        // Descomente para testar sem Firebase
+        // loadSampleData();
+    </script>
+</body>
+</html>

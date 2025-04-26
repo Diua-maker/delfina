@@ -1,0 +1,1292 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Painel do Desenhista - ArtConnect</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary-color: #4a6fa5;
+            --secondary-color: #166088;
+            --accent-color: #4fc3f7;
+            --text-color: #333;
+            --light-bg: #f5f7fa;
+            --white: #ffffff;
+            --error-color: #e53935;
+            --success-color: #43a047;
+            --gray-light: #eee;
+            --gray: #888;
+        }
+
+        body {
+            background-color: var(--light-bg);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        header {
+            background-color: var(--white);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--primary-color);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo i {
+            margin-right: 10px;
+            color: var(--accent-color);
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+        }
+
+        .nav-links li {
+            margin-left: 30px;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: var(--text-color);
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent-color);
+        }
+
+        .auth-buttons a {
+            text-decoration: none;
+            margin-left: 15px;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: inline-block;
+            text-align: center;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--secondary-color);
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+        }
+
+        .btn-outline:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .menu-toggle {
+            display: none;
+            cursor: pointer;
+            font-size: 24px;
+        }
+
+        .dashboard {
+            padding: 40px 0;
+        }
+
+        .dashboard-header {
+            margin-bottom: 30px;
+        }
+
+        .dashboard-header h1 {
+            color: var(--primary-color);
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .dashboard-tabs {
+            display: flex;
+            border-bottom: 1px solid var(--gray-light);
+            margin-bottom: 30px;
+        }
+
+        .dashboard-tab {
+            padding: 15px 25px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s;
+            border-bottom: 2px solid transparent;
+        }
+
+        .dashboard-tab.active {
+            color: var(--primary-color);
+            border-bottom-color: var(--primary-color);
+        }
+
+        .dashboard-content {
+            background-color: var(--white);
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        .profile-info {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 30px;
+        }
+
+        .profile-image {
+            text-align: center;
+        }
+
+        .profile-image img {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--primary-color);
+        }
+
+        .profile-image .upload-btn {
+            margin-top: 15px;
+        }
+
+        .profile-details h2 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+        }
+
+        .profile-field {
+            margin-bottom: 20px;
+        }
+
+        .profile-field label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: var(--gray);
+        }
+
+        .profile-field input,
+        .profile-field textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--gray-light);
+            border-radius: 5px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .profile-field input:focus,
+        .profile-field textarea:focus {
+            outline: none;
+            border-color: var(--accent-color);
+        }
+
+        .profile-actions {
+            margin-top: 30px;
+            text-align: right;
+        }
+
+        .artwork-form h2 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 8px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--gray-light);
+            border-radius: 5px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .form-control:focus {
+            outline: none;
+            border-color: var(--accent-color);
+        }
+
+        .image-preview {
+            width: 100%;
+            height: 300px;
+            border: 2px dashed var(--gray-light);
+            border-radius: 5px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .image-preview img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            display: none;
+        }
+
+        .image-preview .placeholder {
+            color: var(--gray);
+            text-align: center;
+        }
+
+        .image-preview .placeholder i {
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+
+        .artwork-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .artwork-card {
+            background-color: var(--white);
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+            transition: transform 0.3s;
+        }
+
+        .artwork-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .artwork-image {
+            height: 200px;
+            overflow: hidden;
+        }
+
+        .artwork-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s;
+        }
+
+        .artwork-card:hover .artwork-image img {
+            transform: scale(1.05);
+        }
+
+        .artwork-details {
+            padding: 20px;
+        }
+
+        .artwork-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--primary-color);
+        }
+
+        .artwork-description {
+            color: var(--text-color);
+            margin-bottom: 15px;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .artwork-date {
+            color: var(--gray);
+            font-size: 14px;
+        }
+
+        .artwork-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .action-btn {
+            padding: 8px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .edit-btn {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+        }
+
+        .edit-btn:hover {
+            background-color: #3bb1e8;
+        }
+
+        .delete-btn {
+            background-color: var(--error-color);
+            color: white;
+            border: none;
+        }
+
+        .delete-btn:hover {
+            background-color: #c62828;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            font-weight: 500;
+            display: none;
+        }
+
+        .alert-error {
+            background-color: rgba(229, 57, 53, 0.1);
+            color: var(--error-color);
+            border: 1px solid var(--error-color);
+        }
+
+        .alert-success {
+            background-color: rgba(67, 160, 71, 0.1);
+            color: var(--success-color);
+            border: 1px solid var(--success-color);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 0;
+            color: var(--gray);
+        }
+
+        .empty-state i {
+            font-size: 48px;
+            margin-bottom: 20px;
+            color: var(--gray-light);
+        }
+
+        .empty-state h3 {
+            margin-bottom: 15px;
+            font-size: 20px;
+        }
+
+        footer {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 40px 0;
+            margin-top: 40px;
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+        }
+
+        .footer-section {
+            flex: 1;
+            min-width: 250px;
+            margin-bottom: 20px;
+        }
+
+        .footer-section h3 {
+            margin-bottom: 20px;
+            font-size: 20px;
+        }
+
+        .footer-section ul {
+            list-style: none;
+        }
+
+        .footer-section ul li {
+            margin-bottom: 10px;
+        }
+
+        .footer-section a {
+            color: white;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-section a:hover {
+            color: var(--accent-color);
+        }
+
+        .social-icons {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .social-icons a {
+            color: white;
+            font-size: 20px;
+            transition: color 0.3s;
+        }
+
+        .social-icons a:hover {
+            color: var(--accent-color);
+        }
+
+        .copyright {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        @media (max-width: 768px) {
+            .menu-toggle {
+                display: block;
+            }
+
+            .nav-links {
+                position: fixed;
+                top: 80px;
+                left: -100%;
+                width: 100%;
+                height: calc(100vh - 80px);
+                background-color: var(--white);
+                flex-direction: column;
+                align-items: center;
+                justify-content: flex-start;
+                padding-top: 40px;
+                transition: left 0.3s;
+            }
+
+            .nav-links.active {
+                left: 0;
+            }
+
+            .nav-links li {
+                margin: 15px 0;
+            }
+
+            .profile-info {
+                grid-template-columns: 1fr;
+            }
+
+            .profile-image {
+                margin-bottom: 20px;
+            }
+
+            .footer-content {
+                flex-direction: column;
+            }
+
+            .footer-section {
+                margin-bottom: 30px;
+            }
+        }
+
+        #user-status {
+            display: flex;
+            align-items: center;
+        }
+
+        #user-name {
+            margin-right: 15px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <nav>
+                <a href="index.html" class="logo"><i class="fas fa-paint-brush"></i>ArtConnect</a>
+                <div class="menu-toggle" id="mobile-menu">
+                    <i class="fas fa-bars"></i>
+                </div>
+                <ul class="nav-links" id="nav-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="gallery.html">Galeria</a></li>
+                    <li><a href="contact.html">Contato</a></li>
+                    <li><a href="dashboard.html" class="active">Meu Painel</a></li>
+                </ul>
+                <div id="user-status">
+                    <span id="user-name"></span>
+                    <a href="#" id="logout-btn" class="btn btn-outline">Sair</a>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <section class="dashboard">
+        <div class="container">
+            <div class="dashboard-header">
+                <h1>Painel do Desenhista</h1>
+                <p>Gerencie seu perfil e suas obras</p>
+            </div>
+
+            <div class="dashboard-tabs">
+                <div class="dashboard-tab active" data-tab="profile">Meu Perfil</div>
+                <div class="dashboard-tab" data-tab="new-artwork">Nova Obra</div>
+                <div class="dashboard-tab" data-tab="my-artworks">Minhas Obras</div>
+            </div>
+
+            <div class="alert alert-error" id="error-message"></div>
+            <div class="alert alert-success" id="success-message"></div>
+
+            <!-- Aba de Perfil -->
+            <div class="dashboard-content" id="profile-tab">
+                <div class="profile-info">
+                    <div class="profile-image">
+                        <img id="profile-img" src="https://via.placeholder.com/150" alt="Foto de perfil">
+                        <div class="upload-btn">
+                            <button class="btn btn-outline" id="change-photo-btn">Alterar Foto</button>
+                            <input type="file" id="profile-photo-input" style="display: none;" accept="image/*">
+                        </div>
+                    </div>
+                    <div class="profile-details">
+                        <h2>Informações Pessoais</h2>
+                        <form id="profile-form">
+                            <div class="profile-field">
+                                <label for="profile-name">Nome completo</label>
+                                <input type="text" id="profile-name" placeholder="Seu nome completo">
+                            </div>
+                            <div class="profile-field">
+                                <label for="profile-email">E-mail</label>
+                                <input type="email" id="profile-email" disabled>
+                            </div>
+                            <div class="profile-field">
+                                <label for="profile-whatsapp">WhatsApp</label>
+                                <input type="tel" id="profile-whatsapp" placeholder="Seu número de WhatsApp">
+                            </div>
+                            <div class="profile-field">
+                                <label for="profile-telegram">Telegram (opcional)</label>
+                                <input type="text" id="profile-telegram" placeholder="Seu usuário do Telegram">
+                            </div>
+                            <div class="profile-field">
+                                <label for="profile-location">Localização (opcional)</label>
+                                <input type="text" id="profile-location" placeholder="Sua cidade/estado">
+                            </div>
+                            <div class="profile-field">
+                                <label for="profile-bio">Biografia</label>
+                                <textarea id="profile-bio" rows="4" placeholder="Conte um pouco sobre você e seu trabalho"></textarea>
+                            </div>
+                            <div class="profile-actions">
+                                <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Aba de Nova Obra -->
+            <div class="dashboard-content" id="new-artwork-tab" style="display: none;">
+                <div class="artwork-form">
+                    <h2>Publicar Nova Obra</h2>
+                    <form id="artwork-form">
+                        <div class="form-group">
+                            <label for="artwork-title">Título da Obra</label>
+                            <input type="text" id="artwork-title" class="form-control" placeholder="Digite o título da sua obra" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="artwork-image">Imagem da Obra</label>
+                            <div class="image-preview" id="artwork-preview">
+                                <img id="artwork-preview-img" src="" alt="Preview da obra">
+                                <div class="placeholder" id="artwork-placeholder">
+                                    <i class="fas fa-image"></i>
+                                    <p>Clique para selecionar uma imagem</p>
+                                </div>
+                            </div>
+                            <input type="file" id="artwork-image" accept="image/*" style="display: none;" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="artwork-description">Descrição</label>
+                            <textarea id="artwork-description" class="form-control" rows="5" placeholder="Descreva sua obra, técnicas utilizadas, inspiração, etc." required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Publicar Obra</button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Aba de Minhas Obras -->
+            <div class="dashboard-content" id="my-artworks-tab" style="display: none;">
+                <h2>Minhas Obras Publicadas</h2>
+                <div id="artwork-list" class="artwork-list">
+                    <!-- As obras serão carregadas dinamicamente aqui -->
+                </div>
+                <div id="empty-artworks" class="empty-state" style="display: none;">
+                    <i class="fas fa-paint-brush"></i>
+                    <h3>Você ainda não publicou nenhuma obra</h3>
+                    <p>Clique em "Nova Obra" para começar a mostrar seu trabalho</p>
+                    <button class="btn btn-primary" id="go-to-new-artwork">Publicar Primeira Obra</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>ArtConnect</h3>
+                    <p>Conectando desenhistas talentosos e clientes em busca de arte única.</p>
+                    <div class="social-icons">
+                        <a href="#"><i class="fab fa-facebook"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-pinterest"></i></a>
+                    </div>
+                </div>
+                <div class="footer-section">
+                    <h3>Links Rápidos</h3>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="gallery.html">Galeria</a></li>
+                        <li><a href="contact.html">Contato</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>Contato</h3>
+                    <ul>
+                        <li><i class="fas fa-envelope"></i> contato@artconnect.com</li>
+                        <li><i class="fas fa-phone"></i> (11) 99999-9999</li>
+                        <li><i class="fas fa-map-marker-alt"></i> São Paulo, Brasil</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2025 ArtConnect. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-storage-compat.js"></script>
+
+    <script>
+        // Configuração do Firebase
+        const firebaseConfig = {
+            apiKey: "SUA_API_KEY",
+            authDomain: "seu-projeto.firebaseapp.com",
+            projectId: "seu-projeto",
+            storageBucket: "seu-projeto.appspot.com",
+            messagingSenderId: "seu-messaging-sender-id",
+            appId: "seu-app-id"
+        };
+
+        // Inicializa o Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+        const storage = firebase.storage();
+
+        // Toggle menu mobile
+        const mobileMenu = document.getElementById('mobile-menu');
+        const navLinks = document.getElementById('nav-links');
+
+        mobileMenu.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+        });
+
+        // Elementos do DOM
+        const tabs = document.querySelectorAll('.dashboard-tab');
+        const profileTab = document.getElementById('profile-tab');
+        const newArtworkTab = document.getElementById('new-artwork-tab');
+        const myArtworksTab = document.getElementById('my-artworks-tab');
+        const errorMessage = document.getElementById('error-message');
+        const successMessage = document.getElementById('success-message');
+        const userNameElement = document.getElementById('user-name');
+        const profileForm = document.getElementById('profile-form');
+        const artworkForm = document.getElementById('artwork-form');
+        const artworkList = document.getElementById('artwork-list');
+        const emptyArtworks = document.getElementById('empty-artworks');
+        const goToNewArtwork = document.getElementById('go-to-new-artwork');
+        const logoutBtn = document.getElementById('logout-btn');
+
+        // Variáveis globais
+        let currentUser = null;
+        let userProfile = null;
+        let selectedArtworkImage = null;
+
+        // Verificar autenticação
+        auth.onAuthStateChanged(user => {
+            if (user) {
+                currentUser = user;
+                userNameElement.textContent = user.email;
+                
+                // Carregar perfil do usuário
+                loadUserProfile();
+                
+                // Carregar obras do usuário
+                loadUserArtworks();
+            } else {
+                // Redirecionar para a página de login se não estiver autenticado
+                window.location.href = 'auth.html';
+            }
+        });
+
+        // Alternar entre abas
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                // Remover classe ativa de todas as abas
+                tabs.forEach(t => t.classList.remove('active'));
+                
+                // Adicionar classe ativa à aba clicada
+                tab.classList.add('active');
+                
+                // Esconder todas as abas de conteúdo
+                profileTab.style.display = 'none';
+                newArtworkTab.style.display = 'none';
+                myArtworksTab.style.display = 'none';
+                
+                // Mostrar a aba de conteúdo correspondente
+                const tabId = tab.dataset.tab;
+                if (tabId === 'profile') {
+                    profileTab.style.display = 'block';
+                } else if (tabId === 'new-artwork') {
+                    newArtworkTab.style.display = 'block';
+                } else if (tabId === 'my-artworks') {
+                    myArtworksTab.style.display = 'block';
+                    loadUserArtworks(); // Recarregar obras ao mudar para esta aba
+                }
+                
+                // Esconder mensagens de erro/sucesso ao mudar de aba
+                hideMessages();
+            });
+        });
+
+        // Função para carregar perfil do usuário
+        function loadUserProfile() {
+            db.collection('users').doc(currentUser.uid).get()
+                .then(doc => {
+                    if (doc.exists) {
+                        userProfile = doc.data();
+                        
+                        // Preencher formulário de perfil
+                        document.getElementById('profile-name').value = userProfile.name || '';
+                        document.getElementById('profile-email').value = userProfile.email || currentUser.email;
+                        document.getElementById('profile-whatsapp').value = userProfile.whatsapp || '';
+                        document.getElementById('profile-telegram').value = userProfile.telegram || '';
+                        document.getElementById('profile-location').value = userProfile.location || '';
+                        document.getElementById('profile-bio').value = userProfile.bio || '';
+                        
+                        // Carregar imagem de perfil se existir
+                        if (userProfile.profileImage) {
+                            document.getElementById('profile-img').src = userProfile.profileImage;
+                        }
+                    } else {
+                        showError('Perfil não encontrado. Por favor, faça login novamente.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Erro ao carregar perfil:', error);
+                    showError('Erro ao carregar perfil. Tente novamente mais tarde.');
+                });
+        }
+
+        // Função para carregar obras do usuário
+        function loadUserArtworks() {
+            db.collection('artworks')
+                .where('artistId', '==', currentUser.uid)
+                .orderBy('createdAt', 'desc')
+                .get()
+                .then(snapshot => {
+                    // Limpar lista de obras
+                    artworkList.innerHTML = '';
+                    
+                    if (snapshot.empty) {
+                        // Mostrar estado vazio
+                        artworkList.style.display = 'none';
+                        emptyArtworks.style.display = 'block';
+                    } else {
+                        // Mostrar lista de obras
+                        artworkList.style.display = 'grid';
+                        emptyArtworks.style.display = 'none';
+                        
+                        // Adicionar cada obra à lista
+                        snapshot.forEach(doc => {
+                            const artwork = doc.data();
+                            artwork.id = doc.id;
+                            addArtworkToList(artwork);
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.error('Erro ao carregar obras:', error);
+                    showError('Erro ao carregar suas obras. Tente novamente mais tarde.');
+                });
+        }
+
+        // Função para adicionar obra à lista
+        function addArtworkToList(artwork) {
+            const artworkElement = document.createElement('div');
+            artworkElement.className = 'artwork-card';
+            artworkElement.innerHTML = `
+                <div class="artwork-image">
+                    <img src="${artwork.imageUrl}" alt="${artwork.title}">
+                </div>
+                <div class="artwork-details">
+                    <h3 class="artwork-title">${artwork.title}</h3>
+                    <p class="artwork-description">${artwork.description}</p>
+                    <p class="artwork-date">Publicado em: ${formatDate(artwork.createdAt.toDate())}</p>
+                    <div class="artwork-actions">
+                        <button class="action-btn edit-btn" data-id="${artwork.id}">
+                            <i class="fas fa-edit"></i> Editar
+                        </button>
+                        <button class="action-btn delete-btn" data-id="${artwork.id}">
+                            <i class="fas fa-trash"></i> Excluir
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            // Adicionar à lista
+            artworkList.appendChild(artworkElement);
+            
+            // Adicionar eventos aos botões
+            artworkElement.querySelector('.edit-btn').addEventListener('click', () => {
+                editArtwork(artwork);
+            });
+            
+            artworkElement.querySelector('.delete-btn').addEventListener('click', () => {
+                deleteArtwork(artwork.id);
+            });
+        }
+
+        // Função para formatar data
+        function formatDate(date) {
+            return new Intl.DateTimeFormat('pt-BR', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            }).format(date);
+        }
+
+        // Função para editar obra
+        function editArtwork(artwork) {
+            // Mudar para a aba de nova obra
+            tabs.forEach(tab => {
+                if (tab.dataset.tab === 'new-artwork') {
+                    tab.click();
+                }
+            });
+            
+            // Preencher formulário com dados da obra
+            document.getElementById('artwork-title').value = artwork.title;
+            document.getElementById('artwork-description').value = artwork.description;
+            
+            // Mostrar imagem no preview
+            const previewImg = document.getElementById('artwork-preview-img');
+            previewImg.src = artwork.imageUrl;
+            previewImg.style.display = 'block';
+            document.getElementById('artwork-placeholder').style.display = 'none';
+            
+            // Adicionar ID da obra ao formulário para identificar que é uma edição
+            artworkForm.dataset.artworkId = artwork.id;
+            
+            // Mudar texto do botão
+            artworkForm.querySelector('button[type="submit"]').textContent = 'Atualizar Obra';
+        }
+
+        // Função para excluir obra
+        function deleteArtwork(artworkId) {
+            if (confirm('Tem certeza que deseja excluir esta obra? Esta ação não pode ser desfeita.')) {
+                // Buscar obra para obter URL da imagem
+                db.collection('artworks').doc(artworkId).get()
+                    .then(doc => {
+                        if (doc.exists) {
+                            const artwork = doc.data();
+                            
+                            // Excluir documento do Firestore
+                            db.collection('artworks').doc(artworkId).delete()
+                                .then(() => {
+                                    // Excluir imagem do Storage
+                                    if (artwork.imageUrl) {
+                                        // Extrair caminho da URL
+                                        const imageRef = storage.refFromURL(artwork.imageUrl);
+                                        imageRef.delete()
+                                            .then(() => {
+                                                showSuccess('Obra excluída com sucesso!');
+                                                loadUserArtworks(); // Recarregar lista
+                                            })
+                                            .catch(error => {
+                                                console.error('Erro ao excluir imagem:', error);
+                                                showSuccess('Obra excluída, mas houve um erro ao excluir a imagem.');
+                                                loadUserArtworks(); // Recarregar lista mesmo assim
+                                            });
+                                    } else {
+                                        showSuccess('Obra excluída com sucesso!');
+                                        loadUserArtworks(); // Recarregar lista
+                                    }
+                                })
+                                .catch(error => {
+                                    console.error('Erro ao excluir obra:', error);
+                                    showError('Erro ao excluir obra. Tente novamente.');
+                                });
+                        } else {
+                            showError('Obra não encontrada.');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Erro ao buscar obra:', error);
+                        showError('Erro ao excluir obra. Tente novamente.');
+                    });
+            }
+        }
+
+        // Evento para formulário de perfil
+        profileForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            // Obter valores do formulário
+            const name = document.getElementById('profile-name').value;
+            const whatsapp = document.getElementById('profile-whatsapp').value;
+            const telegram = document.getElementById('profile-telegram').value;
+            const location = document.getElementById('profile-location').value;
+            const bio = document.getElementById('profile-bio').value;
+            
+            // Validar campos obrigatórios
+            if (!name || !whatsapp) {
+                showError('Nome e WhatsApp são campos obrigatórios.');
+                return;
+            }
+            
+            // Atualizar perfil no Firestore
+            db.collection('users').doc(currentUser.uid).update({
+                name,
+                whatsapp,
+                telegram,
+                location,
+                bio,
+                updatedAt: new Date()
+            })
+            .then(() => {
+                showSuccess('Perfil atualizado com sucesso!');
+                loadUserProfile(); // Recarregar perfil
+            })
+            .catch(error => {
+                console.error('Erro ao atualizar perfil:', error);
+                showError('Erro ao atualizar perfil. Tente novamente.');
+            });
+        });
+
+        // Evento para alterar foto de perfil
+        document.getElementById('change-photo-btn').addEventListener('click', () => {
+            document.getElementById('profile-photo-input').click();
+        });
+
+        // Evento para quando uma foto de perfil for selecionada
+        document.getElementById('profile-photo-input').addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                // Verificar tipo de arquivo
+                if (!file.type.match('image.*')) {
+                    showError('Por favor, selecione uma imagem válida.');
+                    return;
+                }
+                
+                // Verificar tamanho do arquivo (max 5MB)
+                if (file.size > 5 * 1024 * 1024) {
+                    showError('A imagem deve ter no máximo 5MB.');
+                    return;
+                }
+                
+                // Mostrar preview
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    document.getElementById('profile-img').src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+                
+                // Fazer upload da imagem
+                const storageRef = storage.ref(`profile_images/${currentUser.uid}`);
+                const uploadTask = storageRef.put(file);
+                
+                uploadTask.on('state_changed', 
+                    // Progresso
+                    (snapshot) => {
+                        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                        console.log('Upload progress: ' + progress + '%');
+                    },
+                    // Erro
+                    (error) => {
+                        console.error('Erro no upload:', error);
+                        showError('Erro ao fazer upload da imagem. Tente novamente.');
+                    },
+                    // Sucesso
+                    () => {
+                        // Obter URL da imagem
+                        uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
+                            // Atualizar URL no perfil do usuário
+                            db.collection('users').doc(currentUser.uid).update({
+                                profileImage: downloadURL,
+                                updatedAt: new Date()
+                            })
+                            .then(() => {
+                                showSuccess('Foto de perfil atualizada com sucesso!');
+                            })
+                            .catch(error => {
+                                console.error('Erro ao atualizar perfil:', error);
+                                showError('Erro ao atualizar foto de perfil. Tente novamente.');
+                            });
+                        });
+                    }
+                );
+            }
+        });
+
+        // Evento para preview de imagem da obra
+        document.getElementById('artwork-preview').addEventListener('click', () => {
+            document.getElementById('artwork-image').click();
+        });
+
+        // Evento para quando uma imagem de obra for selecionada
+        document.getElementById('artwork-image').addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                // Verificar tipo de arquivo
+                if (!file.type.match('image.*')) {
+                    showError('Por favor, selecione uma imagem válida.');
+                    return;
+                }
+                
+                // Verificar tamanho do arquivo (max 5MB)
+                if (file.size > 5 * 1024 * 1024) {
+                    showError('A imagem deve ter no máximo 5MB.');
+                    return;
+                }
+                
+                // Salvar arquivo selecionado
+                selectedArtworkImage = file;
+                
+                // Mostrar preview
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const previewImg = document.getElementById('artwork-preview-img');
+                    previewImg.src = e.target.result;
+                    previewImg.style.display = 'block';
+                    document.getElementById('artwork-placeholder').style.display = 'none';
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Evento para formulário de obra
+        artworkForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            // Obter valores do formulário
+            const title = document.getElementById('artwork-title').value;
+            const description = document.getElementById('artwork-description').value;
+            
+            // Verificar se é edição ou nova obra
+            const artworkId = artworkForm.dataset.artworkId;
+            const isEdit = !!artworkId;
+            
+            // Validar campos obrigatórios
+            if (!title || !description) {
+                showError('Todos os campos são obrigatórios.');
+                return;
+            }
+            
+            // Se for nova obra, verificar se há imagem selecionada
+            if (!isEdit && !selectedArtworkImage) {
+                showError('Por favor, selecione uma imagem para sua obra.');
+                return;
+            }
+            
+            // Se for edição sem nova imagem
+            if (isEdit && !selectedArtworkImage) {
+                // Atualizar apenas os dados de texto
+                db.collection('artworks').doc(artworkId).update({
+                    title,
+                    description,
+                    updatedAt: new Date()
+                })
+                .then(() => {
+                    showSuccess('Obra atualizada com sucesso!');
+                    resetArtworkForm();
+                    loadUserArtworks(); // Recarregar lista
+                })
+                .catch(error => {
+                    console.error('Erro ao atualizar obra:', error);
+                    showError('Erro ao atualizar obra. Tente novamente.');
+                });
+                return;
+            }
+            
+            // Fazer upload da imagem (para nova obra ou edição com nova imagem)
+            const filename = `artwork_${Date.now()}_${currentUser.uid}`;
+            const storageRef = storage.ref(`artwork_images/${filename}`);
+            const uploadTask = storageRef.put(selectedArtworkImage);
+            
+            uploadTask.on('state_changed', 
+                // Progresso
+                (snapshot) => {
+                    const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                    console.log('Upload progress: ' + progress + '%');
+                },
+                // Erro
+                (error) => {
+                    console.error('Erro no upload:', error);
+                    showError('Erro ao fazer upload da imagem. Tente novamente.');
+                },
+                // Sucesso
+                () => {
+                    // Obter URL da imagem
+                    uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
+                        // Dados da obra
+                        const artworkData = {
+                            title,
+                            description,
+                            imageUrl: downloadURL,
+                            artistId: currentUser.uid,
+                            artistName: userProfile.name,
+                            artistEmail: currentUser.email,
+                            artistWhatsapp: userProfile.whatsapp,
+                            artistTelegram: userProfile.telegram,
+                            artistLocation: userProfile.location,
+                            updatedAt: new Date()
+                        };
+                        
+                        if (isEdit) {
+                            // Atualizar obra existente
+                            db.collection('artworks').doc(artworkId).update(artworkData)
+                                .then(() => {
+                                    showSuccess('Obra atualizada com sucesso!');
+                                    resetArtworkForm();
+                                    loadUserArtworks(); // Recarregar lista
+                                })
+                                .catch(error => {
+                                    console.error('Erro ao atualizar obra:', error);
+                                    showError('Erro ao atualizar obra. Tente novamente.');
+                                });
+                        } else {
+                            // Adicionar data de criação para nova obra
+                            artworkData.createdAt = new Date();
+                            
+                            // Criar nova obra
+                            db.collection('artworks').add(artworkData)
+                                .then(() => {
+                                    showSuccess('Obra publicada com sucesso!');
+                                    resetArtworkForm();
+                                    loadUserArtworks(); // Recarregar lista
+                                })
+                                .catch(error => {
+                                    console.error('Erro ao publicar obra:', error);
+                                    showError('Erro ao publicar obra. Tente novamente.');
+                                });
+                        }
+                    });
+                }
+            );
+        });
+
+        // Função para resetar formulário de obra
+        function resetArtworkForm() {
+            artworkForm.reset();
+            document.getElementById('artwork-preview-img').style.display = 'none';
+            document.getElementById('artwork-placeholder').style.display = 'block';
+            selectedArtworkImage = null;
+            delete artworkForm.dataset.artworkId;
+            artworkForm.querySelector('button[type="submit"]').textContent = 'Publicar Obra';
+        }
+
+        // Evento para botão de ir para nova obra
+        goToNewArtwork.addEventListener('click', () => {
+            tabs.forEach(tab => {
+                if (tab.dataset.tab === 'new-artwork') {
+                    tab.click();
+                }
+            });
+        });
+
+        // Evento de logout
+        logoutBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            auth.signOut()
+                .then(() => {
+                    window.location.href = 'index.html';
+                })
+                .catch(error => {
+                    console.error('Erro ao fazer logout:', error);
+                    showError('Erro ao fazer logout. Tente novamente.');
+                });
+        });
+
+        // Função para mostrar mensagem de erro
+        function showError(message) {
+            errorMessage.textContent = message;
+            errorMessage.style.display = 'block';
+            successMessage.style.display = 'none';
+            
+            // Scroll para a mensagem
+            errorMessage.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        // Função para mostrar mensagem de sucesso
+        function showSuccess(message) {
+            successMessage.textContent = message;
+            successMessage.style.display = 'block';
+            errorMessage.style.display = 'none';
+            
+            // Scroll para a mensagem
+            successMessage.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        // Função para esconder mensagens
+        function hideMessages() {
+            errorMessage.style.display = 'none';
+            successMessage.style.display = 'none';
+        }
+    </script>
+</body>
+</html>
